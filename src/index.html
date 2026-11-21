@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keith Goes Skiing</title>
+  <meta name="description" content="A retro downhill skiing game. Thread the gates, dodge wildlife and make it to the finish.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Keith Goes Skiing">
+  <meta property="og:description" content="It all goes downhill from here.">
+  <meta property="og:url" content="https://keithski.eaxmarketplace.com/">
+  <meta property="og:image" content="https://keithski.eaxmarketplace.com/assets/social-1200x630.png">
+  <link rel="canonical" href="https://keithski.eaxmarketplace.com/">
+  <link rel="icon" href="./assets/icon-32.png">
+  <link rel="apple-touch-icon" href="./assets/icon-180.png">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script type="module" src="./assets/challenge.js"></script>
+</head>
+<body>
+  <header class="wrap top">
+    <a class="brand" href="#home"><img src="./assets/icon-32.png" width="32" height="32" alt="">Keith Goes Skiing</a>
+    <nav aria-label="Main navigation">
+      <a href="#support">Support</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero wrap" aria-labelledby="title">
+      <div>
+        <h1 id="title">
+          <img src="./assets/logo-640.png"
+            srcset="./assets/logo-640.png 640w, ./assets/logo-1280.png 1280w"
+            sizes="(max-width: 700px) calc(100vw - 36px), 640px"
+            width="640" height="213" alt="Keith Goes Skiing">
+        </h1>
+        <p class="tagline">It all goes downhill from here.</p>
+        <p>Thread the gates, dodge wildlife and get Keith across the finish line. A retro arcade skiing game with one-thumb steering and quick runs.</p>
+        <a class="button" href="#how-to-play">How to play</a>
+      </div>
+      <img class="portrait" src="./assets/keith.png" width="1254" height="1254" alt="Keith in a red bobble hat and bright blue ski goggles">
+    </section>
+
+    <div class="snow">
+      <section class="wrap section" id="friend-challenge" aria-labelledby="challenge-title" hidden>
+        <h2 id="challenge-title">You have been challenged</h2>
+        <p id="challenge-details"></p>
+        <div id="challenge-actions" hidden>
+          <p><a class="button" id="open-app">Open challenge in the app</a></p>
+          <p>Install the latest Keith Goes Skiing first, then return to this link. You can also open Play a Friend’s Challenge in the app and paste this code.</p>
+          <label for="challenge-copy">Challenge code</label>
+          <textarea id="challenge-copy" readonly rows="3"></textarea>
+          <button class="button" id="copy-code" type="button">Copy challenge code</button>
+          <p id="copy-feedback" role="status"></p>
+        </div>
+      </section>
+
+      <section class="wrap section" id="get-app">
+        <h2>Ski with your friends</h2>
+        <p>Share a score card from the results screen, or challenge a friend to beat your score on the same course layout. Open a friend’s link or paste their challenge code into the game.</p>
+        <p>Choose Share App from the main menu to send the game to a friend.</p>
+        <p>Android and iPhone store download links will appear here when the app is released.</p>
+      </section>
+
+      <section class="wrap section" id="how-to-play">
+        <h2>How to play</h2>
+        <ol class="steps">
+          <li><strong>Pick your slope.</strong> Choose one of ten run types. Clear 24 of 30 gates on Levels 1–3, 26 on Levels 4–6, and 28 on Levels 7–10. Continue into Expert stages after Level 10.</li>
+          <li><strong>Drag to steer.</strong> Ski between the flags and dodge rocks, trees and other skiers.</li>
+          <li><strong>Watch the finish.</strong> Animals cross near the final flags. Retry replays the same layout. New Layout gives you a fresh one.</li>
+        </ol>
+      </section>
+
+      <section class="wrap section" id="support">
+        <h2>Support</h2>
+        <p>To report a problem, include your device model, operating system, game version and what happened.</p>
+        <p><a href="mailto:matt@eaxmarketplace.com">Email support</a></p>
+      </section>
+
+      <section class="wrap section" id="privacy">
+        <h2>Privacy policy</h2>
+        <p class="meta">Updated <time datetime="2026-11-20">20 November 2026</time></p>
+        <p>You can play Keith Goes Skiing offline without creating an account. Scores, unlocked levels, sound and analytics preferences are stored on your device. When Usage analytics is enabled, Google Analytics for Firebase receives app activity, session information, device and app information, and an app instance identifier to help us understand usage and improve the game. Events include run type, level, score, gates cleared, collision reason, retries and sharing actions. Google can derive an approximate location from network information. You can turn collection off with Usage analytics on the main menu. We disable advertising ID collection and ad personalization signals. Internet access is needed to send analytics.</p>
+        <p>Sharing opens your device’s share sheet. Nothing is posted until you choose a recipient or app and send it. A score card contains your run type, level, score and gates cleared. A challenge link also contains a layout seed and game rules version so a friend can play the same run. Recipients can read and forward this information. The social or messaging service you select handles it under its own policy. This website uses the challenge code in the link to display the challenge. Our hosting provider may process ordinary request information when you open the website.</p>
+        <p>You can remove locally stored game information by clearing the app’s data where your device provides that option, or by removing the app. If you email us for support, we use the information you provide to respond and resolve your request. We retain the correspondence as needed for those purposes and any applicable obligations. You can email us to request access to or deletion of your support correspondence.</p>
+        <p>If we change how the game handles information, we will update this policy and its effective date. For privacy questions, <a href="mailto:matt@eaxmarketplace.com">email us</a>.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="wrap top">
+    <span>Keith Goes Skiing</span>
+    <nav aria-label="Footer navigation">
+      <a href="#support">Support</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </footer>
+</body>
+</html>

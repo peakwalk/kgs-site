@@ -1,0 +1,19 @@
+{
+  "name": "kgs-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Official website for the Keith Goes Skiing mobile game",
+  "scripts": {
+    "dev": "parcel src/index.html --dist-dir .parcel-dev --public-url /",
+    "prebuild": "node -e \"require('node:fs').rmSync('public', { recursive: true, force: true })\"",
+    "build": "parcel build src/index.html --dist-dir public --public-url . --no-source-maps",
+    "postbuild": "node scripts/finalize-build-assets.js"
+  },
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "devDependencies": {
+    "parcel": "2.16.3"
+  },
+  "packageManager": "yarn@1.22.22"
+}
