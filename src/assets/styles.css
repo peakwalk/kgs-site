@@ -131,6 +131,78 @@ h2 {
   max-width: 78ch;
 }
 
+.download-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2.4vw, 28px);
+  margin-block-start: 16px;
+}
+
+.download-card {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.5vw, 20px);
+  padding: clamp(14px, 2vw, 24px);
+  border: 1px solid #4a7894;
+  border-radius: 12px;
+  background: #f8fbff;
+  color: var(--ink);
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.download-card img {
+  flex: none;
+  width: clamp(32px, 3.6vw, 48px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.download-card small,
+.download-card strong {
+  display: block;
+}
+
+.download-card small {
+  font-size: 0.95rem;
+}
+
+.download-card strong {
+  margin-block-start: 2px;
+  font-size: clamp(1.25rem, 2.35vw, 1.85rem);
+}
+
+.download-card[href]:hover {
+  border-color: #405772;
+  background: #fff;
+}
+
+.download-card[href]:focus-visible {
+  outline-color: #007396;
+}
+
+.download-card[aria-disabled="true"] {
+  border-color: #b8dbea;
+  background: #f3faff;
+  color: #405772;
+}
+
+.download-card[aria-disabled="true"] img {
+  opacity: 0.65;
+}
+
+.download-card[aria-disabled="true"] .download-prompt,
+.download-card:not([aria-disabled="true"]) .download-status {
+  display: none;
+}
+
+.section .download-note {
+  max-width: none;
+  margin: 16px 0 0;
+  color: #405772;
+}
+
 #challenge-copy {
   display: block;
   width: 100%;
@@ -153,6 +225,12 @@ h2 {
 .meta {
   font-size: 0.9rem;
   color: #405772;
+}
+
+@media (max-width: 760px) {
+  .download-cards {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 700px) {
