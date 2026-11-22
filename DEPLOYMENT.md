@@ -10,9 +10,9 @@ After deployment, open the support, privacy and terms links and test a challenge
 
 ## Region check for website analytics
 
-For country-aware analytics, route only `https://keithski.eaxmarketplace.com/_visitor-region` to the Cloudflare Worker entry point `edge/visitor-region.mjs`. The handler uses Cloudflare's request country metadata and returns an uncached region classification without setting a cookie. Keep the site files on the existing static origin. [Cloudflare request metadata](https://developers.cloudflare.com/workers/runtime-apis/request/) · [Worker routes](https://developers.cloudflare.com/workers/configuration/routing/routes/)
+The production page requests `https://api.country.is/` directly from the browser with cookies and referrer omitted. Country.is receives the visitor's IP, and the page reads the country code from its response. GitHub Pages serves the existing site without additional DNS records. [Country.is API](https://country.is/)
 
-GitHub Pages serves static files. A build served without the region endpoint leaves GA4 off for all visitors. An unavailable or inconclusive check also leaves GA4 off. Before using this configuration publicly, verify that EU and undetermined visits make no Google Tag or GA4 requests and set no analytics cookies, and that a known non-EU visit loads the existing tag. Verify the same behavior on a friend challenge link and check that its token stays out of analytics requests.
+An unavailable or inconclusive check leaves GA4 off. Verify that EU visits and failed or undetermined lookups generate no Google Tag or GA4 requests and set no analytics cookies, and that a recognized non-EU visit loads the existing tag. Check the same behavior on a friend challenge link and verify that its token stays out of both the lookup and analytics requests.
 
 ## Download links
 

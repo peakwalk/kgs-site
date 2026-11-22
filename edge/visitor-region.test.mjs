@@ -1,8 +1,21 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { countryRegion } from '../src/assets/visitor-region.mjs';
 import handler from './visitor-region.mjs';
 
 const url = 'https://keithski.eaxmarketplace.com/_visitor-region';
+
+test('Country.is codes enable analytics only for recognized locations outside the EU', () => {
+  for (const country of ['DE', 'FR', 'AX', 'GF', 'GP', 'MF', 'MQ', 'RE', 'YT']) {
+    assert.equal(countryRegion(country), 'eu', country);
+  }
+  for (const country of ['US', 'GB', 'JP', 'AU']) {
+    assert.equal(countryRegion(country), 'outside-eu', country);
+  }
+  for (const country of [undefined, null, {}, 'EU', 'XX', 'T1', 'ZZ', 'SU', 'XK', 'us', 'US\n']) {
+    assert.equal(countryRegion(country), 'unknown');
+  }
+});
 
 function probe(cf, options = {}) {
   const request = new Request(options.url ?? url, options);

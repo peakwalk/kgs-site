@@ -1,4 +1,7 @@
+import { countryRegion } from './visitor-region.mjs';
+
 const productionOrigin = 'https://keithski.eaxmarketplace.com';
+const countryEndpoint = 'https://api.country.is/';
 const measurementId = 'G-0NGL92QQ2Y';
 let analyticsEnabled = false;
 const analyticsReady = location.origin === productionOrigin ? enableAnalytics() : Promise.resolve();
@@ -7,15 +10,15 @@ async function mayLoadAnalytics() {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 2500);
   try {
-    const response = await fetch('/_visitor-region', {
-      mode: 'same-origin',
+    const response = await fetch(countryEndpoint, {
+      mode: 'cors',
       credentials: 'omit',
       referrerPolicy: 'no-referrer',
       redirect: 'error',
       cache: 'no-store',
       signal: controller.signal,
     });
-    return response.ok && (await response.json())?.region === 'outside-eu';
+    return response.ok && countryRegion((await response.json())?.country) === 'outside-eu';
   } catch {
     return false;
   } finally {
