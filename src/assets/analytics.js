@@ -1,5 +1,6 @@
 const productionOrigin = 'https://keithski.eaxmarketplace.com';
 const measurementId = 'G-0NGL92QQ2Y';
+const analyticsEnabled = location.origin === productionOrigin;
 
 function analyticsUrl(value) {
   if (!value) return '';
@@ -12,7 +13,23 @@ function analyticsUrl(value) {
   return url.href;
 }
 
-if (location.origin === productionOrigin) {
+function analyticsPageContext() {
+  return {
+    page_location: analyticsUrl(location.href),
+    page_referrer: analyticsUrl(document.referrer),
+  };
+}
+
+export function trackChallengeEvent(eventName) {
+  if (!analyticsEnabled) return;
+
+  window.gtag('event', eventName, {
+    send_to: measurementId,
+    ...analyticsPageContext(),
+  });
+}
+
+if (analyticsEnabled) {
   const dataLayer = window.dataLayer ||= [];
   window.gtag = function gtag() {
     dataLayer.push(arguments);
@@ -21,8 +38,7 @@ if (location.origin === productionOrigin) {
   // Keep the challenge URL available to the game preview, but send clean URLs to GA4.
   window.gtag('js', new Date());
   window.gtag('config', measurementId, {
-    page_location: analyticsUrl(location.href),
-    page_referrer: analyticsUrl(document.referrer),
+    ...analyticsPageContext(),
     allow_google_signals: false,
     allow_ad_personalization_signals: false,
   });

@@ -1,3 +1,5 @@
+import { trackChallengeEvent } from './analytics.js';
+
 // Match the KGS23 code format and course order used by the game.
 const courseNames = [
   'Practice Slope',
@@ -52,7 +54,14 @@ function showChallenge(codes) {
     const { c: course, l: level, p: score } = challenge;
     const levelLabel = level <= 10 ? `Level ${level}` : `Expert ${level - 10}`;
     details.textContent = `Beat ${score} points on ${courseNames[course]} · ${levelLabel} · Same layout`;
-    document.querySelector('#open-app').href = `keithski://challenge?c=${encodeURIComponent(code)}`;
+    document.querySelector('#open-app').addEventListener('click', () => {
+      // Keep the deep link out of the markup so GA4 cannot collect it as an outbound link.
+      try {
+        trackChallengeEvent('challenge_open_app_clicked');
+      } finally {
+        location.href = `keithski://challenge?c=${encodeURIComponent(code)}`;
+      }
+    });
 
     const codeField = document.querySelector('#challenge-copy');
     const feedback = document.querySelector('#copy-feedback');
@@ -60,12 +69,14 @@ function showChallenge(codes) {
     document.querySelector('#copy-code').addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(code);
-        feedback.textContent = 'Copied. Paste into Play a Friend’s Challenge.';
       } catch {
         codeField.focus();
         codeField.select();
         feedback.textContent = 'Copy the selected code and paste it into Play a Friend’s Challenge.';
+        return;
       }
+      feedback.textContent = 'Copied. Paste into Play a Friend’s Challenge.';
+      trackChallengeEvent('challenge_code_copied');
     });
     document.querySelector('#challenge-actions').hidden = false;
   } else {
@@ -73,6 +84,7 @@ function showChallenge(codes) {
     details.textContent = 'This challenge link is incomplete or uses another version of the game. Ask your friend for a fresh link.';
   }
   document.querySelector('#friend-challenge').hidden = false;
+  if (challenge) trackChallengeEvent('challenge_preview_opened');
 }
 
 const codes = new URLSearchParams(location.search).getAll('challenge');
