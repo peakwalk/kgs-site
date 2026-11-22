@@ -1,6 +1,27 @@
 const productionOrigin = 'https://keithski.eaxmarketplace.com';
 const measurementId = 'G-0NGL92QQ2Y';
-const analyticsEnabled = location.origin === productionOrigin;
+let analyticsEnabled = false;
+const analyticsReady = location.origin === productionOrigin ? enableAnalytics() : Promise.resolve();
+
+async function mayLoadAnalytics() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 2500);
+  try {
+    const response = await fetch('/_visitor-region', {
+      mode: 'same-origin',
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      redirect: 'error',
+      cache: 'no-store',
+      signal: controller.signal,
+    });
+    return response.ok && (await response.json())?.region === 'outside-eu';
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 function analyticsUrl(value) {
   if (!value) return '';
@@ -20,16 +41,28 @@ function analyticsPageContext() {
   };
 }
 
-export function trackChallengeEvent(eventName) {
-  if (!analyticsEnabled) return;
-
+function recordChallengeEvent(eventName) {
   window.gtag('event', eventName, {
     send_to: measurementId,
     ...analyticsPageContext(),
   });
 }
 
-if (analyticsEnabled) {
+export function trackChallengeEvent(eventName) {
+  if (analyticsEnabled) {
+    recordChallengeEvent(eventName);
+    return;
+  }
+
+  // Keep early interactions for verified non-EU visits while the region check is pending.
+  void analyticsReady.then(() => {
+    if (analyticsEnabled) recordChallengeEvent(eventName);
+  });
+}
+
+async function enableAnalytics() {
+  if (!(await mayLoadAnalytics())) return;
+
   const dataLayer = window.dataLayer ||= [];
   window.gtag = function gtag() {
     dataLayer.push(arguments);
@@ -48,4 +81,5 @@ if (analyticsEnabled) {
   script.referrerPolicy = 'no-referrer';
   script.src = 'https://www.googletagmanager.com/gtag/js?id=' + measurementId;
   document.head.append(script);
+  analyticsEnabled = true;
 }
