@@ -16,4 +16,6 @@ An unavailable or inconclusive check leaves GA4 off. Verify that EU visits and f
 
 ## Download links
 
-In `src/index.html`, enable each card in `#downloads` once its public download is available. Add the verified destination as `href` and remove `role="link"` and `aria-disabled="true"` from that card. Use the public Keith Goes Skiing listing for each store and a publicly downloadable, release-signed APK for **Download APK**.
+Enable the App Store and Google Play cards in `src/index.html` when their public listings are available. Add the destination as `href` and remove `role="link"` and `aria-disabled="true"` from that card.
+
+The game's `publish:android:production` command updates the **Download APK** link and `src/data/android-production-download.json` after verifying the Google Play-signed APK from the public Zealot direct download. The command builds the site and pushes the link commit to this repository's GitHub `main`. A push that changes the download metadata triggers the Pages workflow. Use `workflow_dispatch` for other site deployments.
