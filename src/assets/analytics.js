@@ -3,8 +3,15 @@ import { countryRegion } from './visitor-region.mjs';
 const productionOrigin = 'https://keithski.eaxmarketplace.com';
 const countryEndpoint = 'https://api.country.is/';
 const measurementId = 'G-0NGL92QQ2Y';
+const openPanelEndpoint = 'https://openpanel.peakwalk.tech/api/track';
+const openPanelClientId = 'f5b416c4-293f-41ea-a747-30530f49e0b8';
 let analyticsEnabled = false;
-const analyticsReady = location.origin === productionOrigin ? enableAnalytics() : Promise.resolve();
+const analyticsAllowed = location.origin === productionOrigin ? mayLoadAnalytics() : Promise.resolve(false);
+const analyticsReady = analyticsAllowed.then((allowed) => {
+  if (allowed) enableAnalytics();
+});
+
+document.getElementById('android-direct-download')?.addEventListener('click', trackApkDownloadClick);
 
 async function mayLoadAnalytics() {
   const controller = new AbortController();
@@ -63,9 +70,28 @@ export function trackChallengeEvent(eventName) {
   });
 }
 
-async function enableAnalytics() {
-  if (!(await mayLoadAnalytics())) return;
+function trackApkDownloadClick() {
+  void analyticsAllowed.then((allowed) => {
+    if (!allowed) return;
 
+    return fetch(openPanelEndpoint, {
+      method: 'POST',
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      redirect: 'error',
+      keepalive: true,
+      headers: {
+        'content-type': 'application/json',
+        'openpanel-client-id': openPanelClientId,
+      },
+      body: JSON.stringify({ type: 'track', payload: { name: 'apk_download_clicked', properties: {} } }),
+    });
+  }).catch(() => {
+    // Analytics failures must not interrupt the download.
+  });
+}
+
+function enableAnalytics() {
   const dataLayer = window.dataLayer ||= [];
   window.gtag = function gtag() {
     dataLayer.push(arguments);
