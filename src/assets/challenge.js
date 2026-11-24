@@ -1,4 +1,4 @@
-import { trackChallengeEvent } from './analytics.js';
+import { trackGa4Event } from './analytics.js';
 
 // Match the KGS23 code format and course order used by the game.
 const courseNames = [
@@ -57,7 +57,7 @@ function showChallenge(codes) {
     document.querySelector('#open-app').addEventListener('click', () => {
       // Keep the deep link out of the markup so GA4 cannot collect it as an outbound link.
       try {
-        trackChallengeEvent('challenge_open_app_clicked');
+        trackGa4Event('challenge_open_app_clicked');
       } finally {
         location.href = `keithski://challenge?c=${encodeURIComponent(code)}`;
       }
@@ -76,7 +76,7 @@ function showChallenge(codes) {
         return;
       }
       feedback.textContent = 'Copied. Paste into Play a Friend’s Challenge.';
-      trackChallengeEvent('challenge_code_copied');
+      trackGa4Event('challenge_code_copied');
     });
     document.querySelector('#challenge-actions').hidden = false;
   } else {
@@ -84,7 +84,7 @@ function showChallenge(codes) {
     details.textContent = 'This challenge link is incomplete or uses another version of the game. Ask your friend for a fresh link.';
   }
   document.querySelector('#friend-challenge').hidden = false;
-  if (challenge) trackChallengeEvent('challenge_preview_opened');
+  if (challenge) trackGa4Event('challenge_preview_opened');
 }
 
 const codes = new URLSearchParams(location.search).getAll('challenge');

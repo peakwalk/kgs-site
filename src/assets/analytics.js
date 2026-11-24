@@ -3,20 +3,14 @@ import { countryRegion } from './visitor-region.mjs';
 const productionOrigin = 'https://keithski.eaxmarketplace.com';
 const countryEndpoint = 'https://api.country.is/';
 const measurementId = 'G-0NGL92QQ2Y';
-const openPanelEndpoint = 'https://openpanel.peakwalk.tech/api/track';
-const openPanelClientId = 'f5b416c4-293f-41ea-a747-30530f49e0b8';
-const pageLoadedAt = Date.now();
 let analyticsEnabled = false;
 const analyticsAllowed = location.origin === productionOrigin ? mayLoadAnalytics() : Promise.resolve(false);
 const analyticsReady = analyticsAllowed.then((allowed) => {
   if (allowed) enableAnalytics();
 });
-const openPanelPageReady = analyticsAllowed.then(async (allowed) => {
-  if (allowed) await sendOpenPanelEvent('screen_view', pageLoadedAt);
-  return allowed;
+document.getElementById('android-direct-download')?.addEventListener('click', () => {
+  trackGa4Event('apk_download_clicked');
 });
-
-document.getElementById('android-direct-download')?.addEventListener('click', trackApkDownloadClick);
 
 async function mayLoadAnalytics() {
   const controller = new AbortController();
@@ -56,57 +50,23 @@ function analyticsPageContext() {
   };
 }
 
-function recordChallengeEvent(eventName) {
+function recordGa4Event(eventName) {
   window.gtag('event', eventName, {
     send_to: measurementId,
     ...analyticsPageContext(),
   });
 }
 
-export function trackChallengeEvent(eventName) {
+export function trackGa4Event(eventName) {
   if (analyticsEnabled) {
-    recordChallengeEvent(eventName);
+    recordGa4Event(eventName);
     return;
   }
 
   // Keep early interactions for verified non-EU visits while the region check is pending.
   void analyticsReady.then(() => {
-    if (analyticsEnabled) recordChallengeEvent(eventName);
+    if (analyticsEnabled) recordGa4Event(eventName);
   });
-}
-
-function trackApkDownloadClick() {
-  const clickedAt = Math.max(Date.now(), pageLoadedAt + 1);
-  void openPanelPageReady.then((allowed) => {
-    if (allowed) return sendOpenPanelEvent('apk_download_clicked', clickedAt);
-  });
-}
-
-async function sendOpenPanelEvent(name, timestamp) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 4000);
-  try {
-    await fetch(openPanelEndpoint, {
-      method: 'POST',
-      credentials: 'omit',
-      referrerPolicy: 'no-referrer',
-      redirect: 'error',
-      keepalive: true,
-      signal: controller.signal,
-      headers: {
-        'content-type': 'application/json',
-        'openpanel-client-id': openPanelClientId,
-      },
-      body: JSON.stringify({
-        type: 'track',
-        payload: { name, properties: { __path: location.pathname, __timestamp: new Date(timestamp).toISOString() } },
-      }),
-    });
-  } catch {
-    // Analytics failures must not interrupt the download.
-  } finally {
-    clearTimeout(timeout);
-  }
 }
 
 function enableAnalytics() {
