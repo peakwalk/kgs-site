@@ -5,10 +5,15 @@ const countryEndpoint = 'https://api.country.is/';
 const measurementId = 'G-0NGL92QQ2Y';
 const openPanelEndpoint = 'https://openpanel.peakwalk.tech/api/track';
 const openPanelClientId = 'f5b416c4-293f-41ea-a747-30530f49e0b8';
+const pageLoadedAt = Date.now();
 let analyticsEnabled = false;
 const analyticsAllowed = location.origin === productionOrigin ? mayLoadAnalytics() : Promise.resolve(false);
 const analyticsReady = analyticsAllowed.then((allowed) => {
   if (allowed) enableAnalytics();
+});
+const openPanelPageReady = analyticsAllowed.then(async (allowed) => {
+  if (allowed) await sendOpenPanelEvent('screen_view', pageLoadedAt);
+  return allowed;
 });
 
 document.getElementById('android-direct-download')?.addEventListener('click', trackApkDownloadClick);
@@ -71,24 +76,37 @@ export function trackChallengeEvent(eventName) {
 }
 
 function trackApkDownloadClick() {
-  void analyticsAllowed.then((allowed) => {
-    if (!allowed) return;
+  const clickedAt = Math.max(Date.now(), pageLoadedAt + 1);
+  void openPanelPageReady.then((allowed) => {
+    if (allowed) return sendOpenPanelEvent('apk_download_clicked', clickedAt);
+  });
+}
 
-    return fetch(openPanelEndpoint, {
+async function sendOpenPanelEvent(name, timestamp) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  try {
+    await fetch(openPanelEndpoint, {
       method: 'POST',
       credentials: 'omit',
       referrerPolicy: 'no-referrer',
       redirect: 'error',
       keepalive: true,
+      signal: controller.signal,
       headers: {
         'content-type': 'application/json',
         'openpanel-client-id': openPanelClientId,
       },
-      body: JSON.stringify({ type: 'track', payload: { name: 'apk_download_clicked', properties: {} } }),
+      body: JSON.stringify({
+        type: 'track',
+        payload: { name, properties: { __path: location.pathname, __timestamp: new Date(timestamp).toISOString() } },
+      }),
     });
-  }).catch(() => {
+  } catch {
     // Analytics failures must not interrupt the download.
-  });
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function enableAnalytics() {
