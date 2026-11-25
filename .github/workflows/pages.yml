@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
     paths:
+      - .github/workflows/pages.yml
+      - src/index.html
+      - src/assets/styles.css
       - src/data/android-production-download.json
   workflow_dispatch:
 
