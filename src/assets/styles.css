@@ -182,21 +182,6 @@ h2 {
   outline-color: #007396;
 }
 
-.download-card[aria-disabled="true"] {
-  border-color: #b8dbea;
-  background: #f3faff;
-  color: #405772;
-}
-
-.download-card[aria-disabled="true"] img {
-  opacity: 0.65;
-}
-
-.download-card[aria-disabled="true"] .download-prompt,
-.download-card:not([aria-disabled="true"]) .download-status {
-  display: none;
-}
-
 .section .download-note {
   max-width: none;
   margin: 16px 0 0;
